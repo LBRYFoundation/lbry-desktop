@@ -20,11 +20,25 @@ type Props = {
   commentIsMine: boolean,
   stakedLevel: number,
   supportAmount: number,
+  isModerator: boolean,
+  isGlobalMod: boolean,
   isFiat: boolean,
 };
 
 function LivestreamComment(props: Props) {
-  const { claim, uri, authorUri, message, commentIsMine, commentId, stakedLevel, supportAmount, isFiat } = props;
+  const {
+    claim,
+    uri,
+    authorUri,
+    message,
+    commentIsMine,
+    commentId,
+    stakedLevel,
+    supportAmount,
+    isModerator,
+    isGlobalMod,
+    isFiat,
+  } = props;
   const [mouseIsHovering, setMouseHover] = React.useState(false);
   const commentByOwnerOfContent = claim && claim.signing_channel && claim.signing_channel.permanent_url === authorUri;
   const { claimName } = parseURI(authorUri);
@@ -47,6 +61,18 @@ function LivestreamComment(props: Props) {
       <div className="livestream-comment__body">
         {supportAmount > 0 && <ChannelThumbnail uri={authorUri} xsmall />}
         <div className="livestream-comment__info">
+          {isGlobalMod && (
+            <span className="comment__badge comment__badge--global-mod">
+              <Icon icon={ICONS.BADGE_GLOBAL_MOD} size={16} tooltip customTooltipText={__('Global Admin')} />
+            </span>
+          )}
+
+          {isModerator && (
+            <span className="comment__badge comment__badge--mod">
+              <Icon icon={ICONS.BADGE_MOD} size={16} tooltip customTooltipText={__('Moderator')} />
+            </span>
+          )}
+
           <Button
             className={classnames('button--uri-indicator comment__author', {
               'comment__author--creator': commentByOwnerOfContent,

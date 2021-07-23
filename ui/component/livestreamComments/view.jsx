@@ -197,6 +197,8 @@ export default function LivestreamComments(props: Props) {
                   commentId={comment.comment_id}
                   message={comment.comment}
                   supportAmount={comment.support_amount}
+                  isModerator={comment.is_moderator}
+                  isGlobalMod={comment.is_global_mod}
                   isFiat={comment.is_fiat}
                   commentIsMine={comment.channel_id && isMyComment(comment.channel_id)}
                 />

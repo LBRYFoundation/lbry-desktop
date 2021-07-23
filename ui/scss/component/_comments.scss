@@ -215,6 +215,22 @@ $thumbnailWidthSmall: 1rem;
   }
 }
 
+.comment__badge {
+  padding-right: var(--spacing-xxs);
+
+  .icon {
+    margin-bottom: -3px;
+  }
+}
+
+.comment__badge--global-mod {
+  color: var(--color-primary);
+}
+
+.comment__badge--mod {
+  color: var(--color-secondary);
+}
+
 .comment__message {
   word-break: break-word;
   max-width: 35rem;
