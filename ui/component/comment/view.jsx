@@ -59,7 +59,9 @@ type Props = {
   stakedLevel: number,
   supportAmount: number,
   numDirectReplies: number,
-  isFiat: boolean
+  isModerator: boolean,
+  isGlobalMod: boolean,
+  isFiat: boolean,
 };
 
 const LENGTH_TO_COLLAPSE = 300;
@@ -92,6 +94,8 @@ function Comment(props: Props) {
     stakedLevel,
     supportAmount,
     numDirectReplies,
+    isModerator,
+    isGlobalMod,
     isFiat,
   } = props;
 
@@ -225,6 +229,18 @@ function Comment(props: Props) {
         <div className="comment__body-container">
           <div className="comment__meta">
             <div className="comment__meta-information">
+              {isGlobalMod && (
+                <span className="comment__badge comment__badge--global-mod">
+                  <Icon icon={ICONS.BADGE_GLOBAL_MOD} size={20} tooltip customTooltipText={__('Global Admin')} />
+                </span>
+              )}
+
+              {isModerator && (
+                <span className="comment__badge comment__badge--mod">
+                  <Icon icon={ICONS.BADGE_MOD} size={20} tooltip customTooltipText={__('Moderator')} />
+                </span>
+              )}
+
               {!author ? (
                 <span className="comment__author">{__('Anonymous')}</span>
               ) : (

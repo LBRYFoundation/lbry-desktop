@@ -167,3 +167,5 @@ export const APPEARANCE = 'Appearance';
 export const CONTENT = 'Content';
 export const STAR = 'star';
 export const MUSIC = 'MusicCategory';
+export const BADGE_GLOBAL_MOD = 'BadgeGlobalMod';
+export const BADGE_MOD = 'BadgeMod';
