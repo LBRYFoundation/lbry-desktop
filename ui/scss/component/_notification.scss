@@ -162,6 +162,19 @@ $contentMaxWidth: 60rem;
   }
 }
 
+.notification__reactions {
+  display: flex;
+  margin-top: var(--spacing-s);
+
+  > *:not(:last-of-type) {
+    margin-right: var(--spacing-m);
+  }
+
+  .button__label {
+    margin-left: var(--spacing-xs);
+  }
+}
+
 .notification__bubble {
   height: 1.5rem;
   width: 1.5rem;

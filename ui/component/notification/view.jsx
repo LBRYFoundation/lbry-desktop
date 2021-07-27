@@ -9,6 +9,7 @@ import DateTime from 'component/dateTime';
 import Button from 'component/button';
 import ChannelThumbnail from 'component/channelThumbnail';
 import { formatLbryUrlForWeb } from 'util/url';
+import { useHistory } from 'react-router';
 import { parseURI } from 'lbry-redux';
 import { PAGE_VIEW_QUERY, DISCUSSION_PAGE } from 'page/channel/view';
 import FileThumbnail from 'component/fileThumbnail';
@@ -17,6 +18,8 @@ import NotificationContentChannelMenu from 'component/notificationContentChannel
 import LbcMessage from 'component/common/lbc-message';
 import { NavLink } from 'react-router-dom';
 import UriIndicator from 'component/uriIndicator';
+import CommentReactions from 'component/commentReactions';
+// import CommentCreate from 'component/commentCreate';
 
 type Props = {
   notification: WebNotification,
@@ -28,7 +31,9 @@ type Props = {
 
 export default function Notification(props: Props) {
   const { notification, menuButton = false, doReadNotifications, doDeleteNotification } = props;
+  const { push } = useHistory();
   const { notification_rule, notification_parameters, is_read, id } = notification;
+  const [isReplying, setReplying] = React.useState(false);
   const isCommentNotification =
     notification_rule === RULE.COMMENT ||
     notification_rule === RULE.COMMENT_REPLY ||
@@ -127,11 +132,19 @@ export default function Notification(props: Props) {
     if (!is_read) {
       doReadNotifications([id]);
     }
+
+    if (notificationLink) {
+      push(notificationLink);
+    }
   }
 
   function handleReadNotification(e) {
     e.stopPropagation();
     doReadNotifications([id]);
+  }
+
+  function handleCommentReply() {
+    setReplying(!isReplying);
   }
 
   const Wrapper = menuButton
@@ -156,18 +169,20 @@ export default function Notification(props: Props) {
       );
 
   return (
-    <NavLink {...navLinkProps}>
-      <Wrapper>
-        <div
-          className={classnames('notification__wrapper', {
-            'notification__wrapper--unread': !is_read,
-          })}
-        >
+    <Wrapper>
+      <div
+        className={classnames('notification__wrapper', {
+          'notification__wrapper--unread': !is_read,
+        })}
+      >
+        <NavLink {...navLinkProps}>
           <div className="notification__icon">{icon}</div>
+        </NavLink>
 
-          <div className="notification__content-wrapper">
-            <div className="notification__content">
-              <div className="notification__text-wrapper">
+        <div className="notification__content-wrapper">
+          <div className="notification__content">
+            <div className="notification__text-wrapper">
+              <NavLink {...navLinkProps}>
                 {!isCommentNotification && (
                   <div className="notification__title">{title}</div>
                 )}
@@ -189,50 +204,74 @@ export default function Notification(props: Props) {
                     </div>
                   </>
                 )}
-              </div>
+              </NavLink>
 
-              {notification_rule === RULE.NEW_CONTENT && (
-                <FileThumbnail uri={notification_parameters.device.target} className="notification__content-thumbnail" />
-              )}
-              {notification_rule === RULE.NEW_LIVESTREAM && (
-                <FileThumbnail
-                  thumbnail={notification_parameters.device.image_url}
-                  className="notification__content-thumbnail"
-                />
+              {isCommentNotification && (
+                <div className="notification__reactions">
+                  <Button
+                    label={__('Reply')}
+                    className="comment__action"
+                    onClick={handleCommentReply}
+                    icon={ICONS.REPLY}
+                  />
+                  <CommentReactions uri={notificationTarget} commentId={notification_parameters.dynamic.hash} />
+                  {/* figure out a better flow for this */}
+                  {/* isReplying && (
+                    <CommentCreate
+                      isReply
+                      uri={notificationTarget}
+                      parentId={notification_parameters.dynamic.hash}
+                      onDoneReplying={() => {
+                        setReplying(false);
+                      }}
+                      onCancelReplying={() => {
+                        setReplying(false);
+                      }}
+                    />
+                    ) */}
+                </div>
               )}
             </div>
 
-            <div className="notification__extra">
-              {!is_read && <Button className="notification__mark-seen" onClick={handleReadNotification} />}
-              <div className="notification__time">
-                <DateTime timeAgo date={notification.active_at} />
-              </div>
-            </div>
+            {notification_rule === RULE.NEW_CONTENT && (
+              <FileThumbnail uri={notification_parameters.device.target} className="notification__content-thumbnail" />
+            )}
+            {notification_rule === RULE.NEW_LIVESTREAM && (
+              <FileThumbnail
+                thumbnail={notification_parameters.device.image_url}
+                className="notification__content-thumbnail"
+              />
+            )}
           </div>
 
-          <div className="notification__menu">
-            <Menu>
-              <MenuButton
-                className={'menu__button notification__menu-button'}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  }}>
-                <Icon size={18} icon={ICONS.MORE_VERTICAL} />
-              </MenuButton>
-              <MenuList className="menu__list">
-                <MenuItem className="menu__link" onSelect={() => doDeleteNotification(id)}>
-                  <Icon aria-hidden icon={ICONS.DELETE} />
-                  {__('Delete')}
-                </MenuItem>
-                {notification_rule === RULE.NEW_CONTENT && channelUrl ? (
-                  <NotificationContentChannelMenu uri={channelUrl} />
-                ) : null}
-              </MenuList>
-            </Menu>
+          <div className="notification__extra">
+            {!is_read && <Button className="notification__mark-seen" onClick={handleReadNotification} />}
+            <div className="notification__time">
+              <DateTime timeAgo date={notification.active_at} />
+            </div>
           </div>
         </div>
-      </Wrapper>
-    </NavLink>
+
+        <div className="notification__menu">
+          <Menu>
+            <MenuButton onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              }}>
+              <Icon size={18} icon={ICONS.MORE_VERTICAL} />
+            </MenuButton>
+            <MenuList className="menu__list">
+              <MenuItem className="menu__link" onSelect={() => doDeleteNotification(id)}>
+                <Icon aria-hidden icon={ICONS.DELETE} />
+                {__('Delete')}
+              </MenuItem>
+              {notification_rule === RULE.NEW_CONTENT && channelUrl ? (
+                <NotificationContentChannelMenu uri={channelUrl} />
+              ) : null}
+            </MenuList>
+          </Menu>
+        </div>
+      </div>
+    </Wrapper>
   );
 }
