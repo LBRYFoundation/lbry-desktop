@@ -39,8 +39,6 @@ export default function Notification(props: Props) {
     notification_rule === RULE.COMMENT_REPLY ||
     notification_rule === RULE.CREATOR_COMMENT;
   const commentText = isCommentNotification && notification_parameters.dynamic.comment;
-  const channelUrl =
-    (notification_rule === RULE.NEW_CONTENT && notification.notification_parameters.dynamic.channel_url) || '';
 
   let notificationTarget;
   switch (notification_rule) {
@@ -56,24 +54,63 @@ export default function Notification(props: Props) {
       notificationTarget = notification_parameters.device.target;
   }
 
+  const creatorIcon = (channelUrl) => {
+    return (
+    <UriIndicator uri={channelUrl} link>
+      <ChannelThumbnail small uri={channelUrl} />
+    </UriIndicator>
+    );
+  };
+  let channelUrl;
+  let icon;
+  switch (notification_rule) {
+    case RULE.CREATOR_SUBSCRIBER:
+      icon = <Icon icon={ICONS.SUBSCRIBE} sectionIcon />;
+      break;
+    case RULE.COMMENT:
+    case RULE.CREATOR_COMMENT:
+      channelUrl = notification_parameters.dynamic.comment_author;
+      icon = creatorIcon(channelUrl);
+      break;
+    case RULE.COMMENT_REPLY:
+      channelUrl = notification_parameters.dynamic.reply_author;
+      icon = creatorIcon(channelUrl);
+      break;
+    case RULE.NEW_CONTENT:
+      channelUrl = notification_parameters.dynamic.channel_url;
+      icon = creatorIcon(channelUrl);
+      break;
+    case RULE.NEW_LIVESTREAM:
+      channelUrl = notification_parameters.dynamic.channel_url;
+      icon = creatorIcon(channelUrl);
+      break;
+    case RULE.DAILY_WATCH_AVAILABLE:
+    case RULE.DAILY_WATCH_REMIND:
+    case RULE.MISSED_OUT:
+    case RULE.REWARDS_APPROVAL_PROMPT:
+      icon = <Icon icon={ICONS.LBC} sectionIcon />;
+      break;
+    case RULE.FIAT_TIP:
+      icon = <Icon icon={ICONS.FINANCE} sectionIcon />;
+      break;
+    default:
+      icon = <Icon icon={ICONS.NOTIFICATION} sectionIcon />;
+  }
+
   let notificationLink = formatLbryUrlForWeb(notificationTarget);
   let urlParams = new URLSearchParams();
   if (isCommentNotification && notification_parameters.dynamic.hash) {
     urlParams.append('lc', notification_parameters.dynamic.hash);
   }
 
+  let channelName = channelUrl && ('@' + channelUrl.split('@')[1].split('#')[0]);
+
   const notificationTitle = notification_parameters.device.title;
   const titleSplit = notificationTitle.split(' ');
-  let creatorName;
-  titleSplit.map((s) => {
-    if (!creatorName && s.includes('@')) {
-      creatorName = s;
-    }
-  });
   const title = titleSplit.map((message) => {
-    if (creatorName === message) {
+    if (channelName === message) {
       return (
-      <UriIndicator uri={notification_parameters.dynamic.comment_author} link />
+      <UriIndicator uri={channelUrl} link />
       );
     } else {
       return <LbcMessage>{__(' %message% ', { message })}</LbcMessage>;
@@ -92,49 +129,6 @@ export default function Notification(props: Props) {
     to: notificationLink,
     onClick: (e) => e.stopPropagation(),
   };
-
-  let icon;
-  switch (notification_rule) {
-    case RULE.CREATOR_SUBSCRIBER:
-      icon = <Icon icon={ICONS.SUBSCRIBE} sectionIcon />;
-      break;
-    case RULE.COMMENT:
-    case RULE.CREATOR_COMMENT:
-      icon =
-      <UriIndicator uri={notification_parameters.dynamic.comment_author} link>
-        <ChannelThumbnail small uri={notification_parameters.dynamic.comment_author} />
-      </UriIndicator>;
-      break;
-    case RULE.COMMENT_REPLY:
-      icon =
-      <UriIndicator uri={notification_parameters.dynamic.reply_author} link>
-        <ChannelThumbnail small uri={notification_parameters.dynamic.reply_author} />
-      </UriIndicator>;
-      break;
-    case RULE.NEW_CONTENT:
-      icon =
-      <UriIndicator uri={notification_parameters.dynamic.channel_url} link>
-        <ChannelThumbnail small uri={notification_parameters.dynamic.channel_url} />
-      </UriIndicator>;
-      break;
-    case RULE.NEW_LIVESTREAM:
-      icon =
-      <UriIndicator uri={notification_parameters.dynamic.channel_url} link>
-        <ChannelThumbnail small uri={notification_parameters.dynamic.channel_url} />
-      </UriIndicator>;
-      break;
-    case RULE.DAILY_WATCH_AVAILABLE:
-    case RULE.DAILY_WATCH_REMIND:
-    case RULE.MISSED_OUT:
-    case RULE.REWARDS_APPROVAL_PROMPT:
-      icon = <Icon icon={ICONS.LBC} sectionIcon />;
-      break;
-    case RULE.FIAT_TIP:
-      icon = <Icon icon={ICONS.FINANCE} sectionIcon />;
-      break;
-    default:
-      icon = <Icon icon={ICONS.NOTIFICATION} sectionIcon />;
-  }
 
   function handleNotificationClick() {
     if (!is_read) {
