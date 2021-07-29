@@ -94,26 +94,34 @@ export default function Notification(props: Props) {
   };
 
   let icon;
-  const creatorIcon =
-  <UriIndicator uri={notification_parameters.dynamic.comment_author} link>
-    <ChannelThumbnail small uri={notification_parameters.dynamic.comment_author} />
-  </UriIndicator>;
   switch (notification_rule) {
     case RULE.CREATOR_SUBSCRIBER:
       icon = <Icon icon={ICONS.SUBSCRIBE} sectionIcon />;
       break;
     case RULE.COMMENT:
     case RULE.CREATOR_COMMENT:
-      icon = creatorIcon;
+      icon =
+      <UriIndicator uri={notification_parameters.dynamic.comment_author} link>
+        <ChannelThumbnail small uri={notification_parameters.dynamic.comment_author} />
+      </UriIndicator>;
       break;
     case RULE.COMMENT_REPLY:
-      icon = creatorIcon;
+      icon =
+      <UriIndicator uri={notification_parameters.dynamic.reply_author} link>
+        <ChannelThumbnail small uri={notification_parameters.dynamic.reply_author} />
+      </UriIndicator>;
       break;
     case RULE.NEW_CONTENT:
-      icon = creatorIcon;
+      icon =
+      <UriIndicator uri={notification_parameters.dynamic.channel_url} link>
+        <ChannelThumbnail small uri={notification_parameters.dynamic.channel_url} />
+      </UriIndicator>;
       break;
     case RULE.NEW_LIVESTREAM:
-      icon = creatorIcon;
+      icon =
+      <UriIndicator uri={notification_parameters.dynamic.channel_url} link>
+        <ChannelThumbnail small uri={notification_parameters.dynamic.channel_url} />
+      </UriIndicator>;
       break;
     case RULE.DAILY_WATCH_AVAILABLE:
     case RULE.DAILY_WATCH_REMIND:
