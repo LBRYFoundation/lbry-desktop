@@ -27,10 +27,13 @@ type Props = {
   children: any,
   doReadNotifications: ([number]) => void,
   doDeleteNotification: (number) => void,
+  doCommentReactList: (Array<string>) => void,
+  fetchingChannels: boolean,
+  isFetchingReacts: boolean,
 };
 
 export default function Notification(props: Props) {
-  const { notification, menuButton = false, doReadNotifications, doDeleteNotification } = props;
+  const { notification, menuButton = false, doReadNotifications, doDeleteNotification, doCommentReactList, fetchingChannels, isFetchingReacts } = props;
   const { push } = useHistory();
   const { notification_rule, notification_parameters, is_read, id } = notification;
   const [isReplying, setReplying] = React.useState(false);
@@ -53,6 +56,13 @@ export default function Notification(props: Props) {
     default:
       notificationTarget = notification_parameters.device.target;
   }
+
+  // Fetch reacts
+  React.useEffect(() => {
+    if (isCommentNotification && notification_parameters.dynamic && notification_parameters.dynamic.hash) {
+      doCommentReactList([notification_parameters.dynamic.hash]);
+    }
+  }, [doCommentReactList, fetchingChannels, isCommentNotification, isFetchingReacts, notification_parameters.dynamic]);
 
   const creatorIcon = (channelUrl) => {
     return (
