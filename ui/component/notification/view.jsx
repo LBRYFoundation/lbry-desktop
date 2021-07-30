@@ -107,13 +107,26 @@ export default function Notification(props: Props) {
 
   const notificationTitle = notification_parameters.device.title;
   const titleSplit = notificationTitle.split(' ');
-  const title = titleSplit.map((message) => {
+  let fullTitle = [' '];
+  let uriIndicator;
+  const title = titleSplit.map((message, index) => {
     if (channelName === message) {
-      return (
+      uriIndicator = (
       <UriIndicator uri={channelUrl} link />
       );
+      fullTitle.push(' ');
+      const resultTitle = fullTitle;
+      fullTitle = [' '];
+
+      return [resultTitle.join(' '), uriIndicator];
     } else {
-      return <LbcMessage>{__(' %message% ', { message })}</LbcMessage>;
+      fullTitle.push(message);
+
+      if (index === (titleSplit.length - 1)) {
+        return (
+          <LbcMessage>{fullTitle.join(' ')}</LbcMessage>
+        );
+      }
     }
   });
 
