@@ -47,7 +47,11 @@ export default function useLazyLoading(
 
             // useful for lazy loading background images on divs
             if (target.dataset.backgroundImage) {
-              target.style.backgroundImage = `url(${target.dataset.backgroundImage})`;
+              if (target.dataset.backgroundImageFallback) {
+                target.style.backgroundImage = `url(${target.dataset.backgroundImage}), url(${target.dataset.backgroundImageFallback})`;
+              } else {
+                target.style.backgroundImage = `url(${target.dataset.backgroundImage})`;
+              }
             }
           }
         });
