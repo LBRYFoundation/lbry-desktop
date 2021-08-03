@@ -1,15 +1,13 @@
 // @flow
 import * as ICONS from 'constants/icons';
 import * as PAGES from 'constants/pages';
-import { SITE_NAME, SIMPLE_SITE, DOMAIN, ENABLE_NO_SOURCE_CLAIMS } from 'config';
+import { SITE_NAME, SIMPLE_SITE, ENABLE_NO_SOURCE_CLAIMS } from 'config';
 import React from 'react';
 import Page from 'component/page';
 import Button from 'component/button';
 import ClaimTilesDiscover from 'component/claimTilesDiscover';
 import ClaimPreviewTile from 'component/claimPreviewTile';
 import Icon from 'component/common/icon';
-import I18nMessage from 'component/i18nMessage';
-import LbcSymbol from 'component/common/lbc-symbol';
 import WaitUntilOnPage from 'component/common/wait-until-on-page';
 import useGetLivestreams from 'effects/use-get-livestreams';
 import { GetLinksData } from 'util/buildHomepage';
@@ -97,35 +95,39 @@ function HomePage(props: Props) {
     );
   }
 
+  const addItem = (title, number) => {
+    const idIndex = title.lastIndexOf('#');
+    if (idIndex === -1) {
+      return <li>{title}</li>;
+    }
+
+    return (
+      <li>
+        <Button
+          button="link"
+          label={title}
+          href={`https://github.com/lbryio/lbry-desktop/issues/${title.substring(idIndex + 1)}`}
+        />
+      </li>
+    );
+  };
+
   return (
     <Page fullWidthPage>
-      {IS_WEB && DOMAIN === 'lbry.tv' && (
-        <div className="notice-message--loud">
-          <h1 className="section__title">
-            <I18nMessage
-              tokens={{
-                odysee: <Button label={__('odysee.com')} button="link" href="https://odysee.com?src=lbrytv-retired" />,
-              }}
-            >
-              lbry.tv is being retired in favor of %odysee%
-            </I18nMessage>
-          </h1>
-          <p className="section__subtitle">
-            <I18nMessage
-              tokens={{
-                desktop_app: (
-                  <Button label={__('desktop app')} button="link" href="https://lbry.com/get?src=lbrytv-retired" />
-                ),
-                odysee: <Button label={__('odysee.com')} button="link" href="https://odysee.com?src=lbrytv-retired" />,
-                credits: <LbcSymbol />,
-              }}
-            >
-              You will have to switch to the %desktop_app% or %odysee% in the near future. Your existing login details
-              will work on %odysee% and all of your %credits% and other settings will be there.
-            </I18nMessage>
-          </p>
-        </div>
-      )}
+      <div className="notice-message--loud">
+        <h1 className="section__title">PRs in this dev instance</h1>
+        <p className="section__subtitle">
+          <ul>
+            {addItem('Refactor Commentron error msg handling #6838')}
+            {addItem('Livestream: implement Pinned Comments #6822')}
+            {addItem('Settings Page layout changes #6821')}
+            {addItem('Comment badge to reflect mod and admin status. #6672')}
+            {addItem('[DRAFT] Fallback image for FileThumbnail #6757')}
+          </ul>
+        </p>
+      </div>
+
+      <br />
 
       {!SIMPLE_SITE && (authenticated || !IS_WEB) && !subscribedChannels.length && (
         <div className="notice-message">
