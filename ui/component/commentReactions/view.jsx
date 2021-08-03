@@ -91,7 +91,11 @@ export default function CommentReactions(props: Props) {
         className={classnames('comment__action', {
           'comment__action--active': myReacts && myReacts.includes(REACTION_TYPES.LIKE),
         })}
-        onClick={handleCommentLike}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handleCommentLike();
+        }}
         label={<span className="comment__reaction-count">{getCountForReact(REACTION_TYPES.LIKE)}</span>}
       />
       <Button
@@ -101,7 +105,11 @@ export default function CommentReactions(props: Props) {
         className={classnames('comment__action', {
           'comment__action--active': myReacts && myReacts.includes(REACTION_TYPES.DISLIKE),
         })}
-        onClick={handleCommentDislike}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handleCommentDislike();
+        }}
         label={<span className="comment__reaction-count">{getCountForReact(REACTION_TYPES.DISLIKE)}</span>}
       />
 
@@ -113,7 +121,11 @@ export default function CommentReactions(props: Props) {
           title={claimIsMine ? __('You loved this') : __('Creator loved this')}
           icon={creatorLiked ? ICONS.CREATOR_LIKE : ICONS.SUBSCRIBE}
           className={classnames('comment__action comment__action--creator-like')}
-          onClick={() => react(commentId, REACTION_TYPES.CREATOR_LIKE)}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            react(commentId, REACTION_TYPES.CREATOR_LIKE);
+          }}
         >
           {creatorLiked && (
             <ChannelThumbnail xsmall uri={authorUri} hideStakedIndicator className="comment__creator-like" />

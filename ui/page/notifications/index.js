@@ -7,6 +7,8 @@ import {
   selectUnseenNotificationCount,
   selectNotificationCategories,
 } from 'redux/selectors/notifications';
+import { selectIsFetchingReacts } from 'redux/selectors/comments';
+import { doCommentReactList } from 'redux/actions/comments';
 import { doReadNotifications, doNotificationList, doSeeAllNotifications } from 'redux/actions/notifications';
 import NotificationsPage from './view';
 
@@ -17,10 +19,12 @@ const select = (state) => ({
   fetching: selectIsFetchingNotifications(state),
   unreadCount: selectUnreadNotificationCount(state),
   unseenCount: selectUnseenNotificationCount(state),
+  isFetchingReacts: selectIsFetchingReacts(state),
 });
 
 export default connect(select, {
   doReadNotifications,
   doNotificationList,
   doSeeAllNotifications,
+  doCommentReactList,
 })(NotificationsPage);
