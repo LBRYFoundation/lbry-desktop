@@ -16,7 +16,6 @@ import FileThumbnail from 'component/fileThumbnail';
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button';
 import NotificationContentChannelMenu from 'component/notificationContentChannelMenu';
 import LbcMessage from 'component/common/lbc-message';
-import { NavLink } from 'react-router-dom';
 import UriIndicator from 'component/uriIndicator';
 import CommentReactions from 'component/commentReactions';
 // import CommentCreate from 'component/commentCreate';
@@ -148,10 +147,6 @@ export default function Notification(props: Props) {
   } catch (e) {}
 
   notificationLink += `?${urlParams.toString()}`;
-  const navLinkProps = {
-    to: notificationLink,
-    onClick: (e) => e.stopPropagation(),
-  };
 
   function handleNotificationClick() {
     if (!is_read) {
@@ -180,7 +175,7 @@ export default function Notification(props: Props) {
       )
     : notificationLink
     ? (props: { children: any }) => (
-        <a className="menu__link--notification" onClick={handleNotificationClick}>
+        <a href={notificationLink} className="menu__link--notification" onClick={handleNotificationClick}>
           {props.children}
         </a>
       )
@@ -200,36 +195,32 @@ export default function Notification(props: Props) {
           'notification__wrapper--unread': !is_read,
         })}
       >
-        <NavLink {...navLinkProps}>
-          <div className="notification__icon">{icon}</div>
-        </NavLink>
+        <div className="notification__icon">{icon}</div>
 
         <div className="notification__content-wrapper">
           <div className="notification__content">
             <div className="notification__text-wrapper">
-              <NavLink {...navLinkProps}>
-                {!isCommentNotification && (
-                  <div className="notification__title">{title}</div>
-                )}
+              {!isCommentNotification && (
+                <div className="notification__title">{title}</div>
+              )}
 
-                {isCommentNotification && commentText ? (
-                  <>
-                    <div className="notification__title">{title}</div>
-                    <div title={commentText} className="notification__text mobile-hidden">
-                      {commentText}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div
-                      title={notification_parameters.device.text.replace(/\sLBC/g, ' Credits')}
-                      className="notification__text"
-                    >
-                      <LbcMessage>{notification_parameters.device.text}</LbcMessage>
-                    </div>
-                  </>
-                )}
-              </NavLink>
+              {isCommentNotification && commentText ? (
+                <>
+                  <div className="notification__title">{title}</div>
+                  <div title={commentText} className="notification__text mobile-hidden">
+                    {commentText}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    title={notification_parameters.device.text.replace(/\sLBC/g, ' Credits')}
+                    className="notification__text"
+                  >
+                    <LbcMessage>{notification_parameters.device.text}</LbcMessage>
+                  </div>
+                </>
+              )}
 
               {isCommentNotification && (
                 <div className="notification__reactions">
