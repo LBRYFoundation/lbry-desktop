@@ -18,7 +18,7 @@ import NotificationContentChannelMenu from 'component/notificationContentChannel
 import LbcMessage from 'component/common/lbc-message';
 import UriIndicator from 'component/uriIndicator';
 import CommentReactions from 'component/commentReactions';
-// import CommentCreate from 'component/commentCreate';
+import CommentCreate from 'component/commentCreate';
 
 type Props = {
   notification: WebNotification,
@@ -26,10 +26,11 @@ type Props = {
   children: any,
   doReadNotifications: ([number]) => void,
   doDeleteNotification: (number) => void,
+  doResolveUri: (string) => void,
 };
 
 export default function Notification(props: Props) {
-  const { notification, menuButton = false, doReadNotifications, doDeleteNotification } = props;
+  const { notification, menuButton = false, doReadNotifications, doDeleteNotification, doResolveUri } = props;
   const { push } = useHistory();
   const { notification_rule, notification_parameters, is_read, id } = notification;
   const [isReplying, setReplying] = React.useState(false);
@@ -52,6 +53,12 @@ export default function Notification(props: Props) {
     default:
       notificationTarget = notification_parameters.device.target;
   }
+
+  React.useEffect(() => {
+    if (isReplying && notificationTarget) {
+      doResolveUri(notificationTarget);
+    }
+  }, [doResolveUri, isReplying, notificationTarget]);
 
   const creatorIcon = (channelUrl) => {
     return (
@@ -213,16 +220,22 @@ export default function Notification(props: Props) {
               )}
 
               {isCommentNotification && (
-                <div className="notification__reactions">
-                  <Button
-                    label={__('Reply')}
-                    className="comment__action"
-                    onClick={handleCommentReply}
-                    icon={ICONS.REPLY}
-                  />
-                  <CommentReactions uri={notificationTarget} commentId={notification_parameters.dynamic.hash} />
-                  {/* figure out a better flow for this */}
-                  {/* isReplying && (
+                <>
+                  <div className="notification__reactions">
+                    <Button
+                      label={__('Reply')}
+                      className="comment__action"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleCommentReply();
+                      }}
+                      icon={ICONS.REPLY}
+                    />
+                    <CommentReactions uri={notificationTarget} commentId={notification_parameters.dynamic.hash} />
+                  </div>
+
+                  {isReplying && (
                     <CommentCreate
                       isReply
                       uri={notificationTarget}
@@ -234,8 +247,8 @@ export default function Notification(props: Props) {
                         setReplying(false);
                       }}
                     />
-                    ) */}
-                </div>
+                  )}
+                </>
               )}
             </div>
 

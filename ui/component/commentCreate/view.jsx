@@ -80,7 +80,7 @@ export function CommentCreate(props: Props) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [commentFailure, setCommentFailure] = React.useState(false);
   const [successTip, setSuccessTip] = React.useState({ txid: undefined, tipAmount: undefined });
-  const { claim_id: claimId } = claim;
+  const claimId = claim && claim.claim_id;
   const [isSupportComment, setIsSupportComment] = React.useState();
   const [isReviewingSupportComment, setIsReviewingSupportComment] = React.useState();
   const [tipAmount, setTipAmount] = React.useState(1);
@@ -330,9 +330,21 @@ export function CommentCreate(props: Props) {
                 ? __('Re-submit')
                 : __('Send')
             }
-            onClick={handleSupportComment}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleSupportComment();
+            }}
           />
-          <Button button="link" label={__('Cancel')} onClick={() => setIsReviewingSupportComment(false)} />
+          <Button
+            button="link"
+            label={__('Cancel')}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setIsReviewingSupportComment(false);
+            }}
+          />
         </div>
       </div>
     );
@@ -371,6 +383,10 @@ export function CommentCreate(props: Props) {
         onChange={handleCommentChange}
         autoFocus={isReply}
         textAreaMaxLength={livestream ? FF_MAX_CHARS_IN_LIVESTREAM_COMMENT : FF_MAX_CHARS_IN_COMMENT}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
       />
       {isSupportComment && (
         <WalletTipAmountSelector
@@ -391,10 +407,23 @@ export function CommentCreate(props: Props) {
               button="primary"
               icon={activeTab === TAB_LBC ? ICONS.LBC : ICONS.FINANCE}
               label={__('Review')}
-              onClick={() => setIsReviewingSupportComment(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsReviewingSupportComment(true);
+              }}
             />
 
-            <Button disabled={disabled} button="link" label={__('Cancel')} onClick={() => setIsSupportComment(false)} />
+            <Button
+              disabled={disabled}
+              button="link"
+              label={__('Cancel')}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsSupportComment(false);
+              }}
+            />
           </>
         ) : (
           <>
@@ -413,6 +442,9 @@ export function CommentCreate(props: Props) {
                   : __('Comment --[button to submit something]--')
               }
               requiresAuth={IS_WEB}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             />
             {!claimIsMine && (
               <Button
@@ -420,7 +452,9 @@ export function CommentCreate(props: Props) {
                 button="alt"
                 className="thatButton"
                 icon={ICONS.LBC}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
                   setIsSupportComment(true);
                   setActiveTab(TAB_LBC);
                 }}
@@ -432,7 +466,9 @@ export function CommentCreate(props: Props) {
                 button="alt"
                 className="thisButton"
                 icon={ICONS.FINANCE}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
                   setIsSupportComment(true);
                   setActiveTab(TAB_FIAT);
                 }}
@@ -442,7 +478,9 @@ export function CommentCreate(props: Props) {
               <Button
                 button="link"
                 label={__('Cancel')}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
                   if (onCancelReplying) {
                     onCancelReplying();
                   }

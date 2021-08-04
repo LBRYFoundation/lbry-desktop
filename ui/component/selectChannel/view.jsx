@@ -38,6 +38,10 @@ function SelectChannel(props: Props) {
         onChange={handleChannelChange}
         value={activeChannelClaim && activeChannelClaim.claim_id}
         disabled={fetchingChannels}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
       >
         {fetchingChannels ? (
           <option>{__('Loading your channels...')}</option>
