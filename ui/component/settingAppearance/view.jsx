@@ -3,6 +3,7 @@ import React from 'react';
 import Card from 'component/common/card';
 import HomepageSelector from 'component/homepageSelector';
 import SettingLanguage from 'component/settingLanguage';
+import ThemeSelector from 'component/themeSelector';
 // $FlowFixMe
 import homepages from 'homepages';
 
@@ -27,6 +28,10 @@ export default function SettingAppearance(props: Props) {
               <HomepageSelector />
             </div>
           )}
+
+         <SettingsRow title={__('Theme')}>
+            <ThemeSelector />
+          </SettingsRow>
         </>
       }
     />
