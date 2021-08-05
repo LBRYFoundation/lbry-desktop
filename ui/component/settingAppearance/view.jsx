@@ -5,17 +5,20 @@ import Card from 'component/common/card';
 import { FormField } from 'component/common/form';
 import HomepageSelector from 'component/homepageSelector';
 import SettingLanguage from 'component/settingLanguage';
+import SettingsRow from 'component/settingsRow';
 import ThemeSelector from 'component/themeSelector';
 // $FlowFixMe
 import homepages from 'homepages';
 
 type Props = {
   clock24h: boolean,
+  searchInLanguage: boolean,
   setClientSetting: (string, boolean | string | number) => void,
+  setSearchInLanguage: (boolean) => void,
 };
 
 export default function SettingAppearance(props: Props) {
-  const { clock24h, setClientSetting } = props;
+  const { clock24h, searchInLanguage, setClientSetting, setSearchInLanguage } = props;
 
   return (
     <Card
@@ -24,15 +27,23 @@ export default function SettingAppearance(props: Props) {
       isBodyList
       body={
         <>
-          {/* --- Language --- */}
-          <div className="card__main-actions">
+          <SettingsRow title={__('Language')} subtitle={__(HELP_LANGUAGE)}>
             <SettingLanguage />
-          </div>
-          {/* --- Homepage --- */}
+          </SettingsRow>
+
+          <SettingsRow title={__('Search only in the selected language by default')}>
+            <FormField
+              name="search-in-language"
+              type="checkbox"
+              checked={searchInLanguage}
+              onChange={() => setSearchInLanguage(!searchInLanguage)}
+            />
+          </SettingsRow>
+
           {homepages && Object.keys(homepages).length > 1 && (
-            <div className="card__main-actions">
+            <SettingsRow title={__('Homepage')} subtitle={__('Tailor your experience.')}>
               <HomepageSelector />
-            </div>
+            </SettingsRow>
           )}
 
           <SettingsRow title={__('Theme')}>
@@ -52,3 +63,6 @@ export default function SettingAppearance(props: Props) {
     />
   );
 }
+
+const HELP_LANGUAGE =
+  'Multi-language support is brand new and incomplete. Switching your language may have unintended consequences, like glossolalia.';
