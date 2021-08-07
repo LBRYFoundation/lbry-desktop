@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 
-import { FormField, FormFieldPrice } from 'component/common/form';
+import { FormField } from 'component/common/form';
 import Button from 'component/button';
 import I18nMessage from 'component/i18nMessage';
 import Page from 'component/page';
@@ -35,8 +35,6 @@ type Props = {
   setClientSetting: (string, SetDaemonSettingArg) => void,
   daemonSettings: DaemonSettings,
   isAuthenticated: boolean,
-  instantPurchaseEnabled: boolean,
-  instantPurchaseMax: Price,
   encryptWallet: () => void,
   decryptWallet: () => void,
   updateWalletStatus: () => void,
@@ -66,7 +64,6 @@ class SettingsAdvancedPage extends React.PureComponent<Props, State> {
     };
 
     (this: any).onMaxConnectionsChange = this.onMaxConnectionsChange.bind(this);
-    (this: any).onInstantPurchaseMaxChange = this.onInstantPurchaseMaxChange.bind(this);
     (this: any).onThemeChange = this.onThemeChange.bind(this);
     (this: any).onAutomaticDarkModeChange = this.onAutomaticDarkModeChange.bind(this);
     (this: any).onConfirmForgetPassword = this.onConfirmForgetPassword.bind(this);
@@ -126,14 +123,6 @@ class SettingsAdvancedPage extends React.PureComponent<Props, State> {
     this.props.setClientSetting(SETTINGS.AUTOMATIC_DARK_MODE_ENABLED, value);
   }
 
-  onInstantPurchaseEnabledChange(enabled: boolean) {
-    this.props.setClientSetting(SETTINGS.INSTANT_PURCHASE_ENABLED, enabled);
-  }
-
-  onInstantPurchaseMaxChange(newValue: Price) {
-    this.props.setClientSetting(SETTINGS.INSTANT_PURCHASE_MAX, newValue);
-  }
-
   onChangeEncryptWallet() {
     const { decryptWallet, walletEncrypted, encryptWallet } = this.props;
     if (walletEncrypted) {
@@ -168,8 +157,6 @@ class SettingsAdvancedPage extends React.PureComponent<Props, State> {
     const {
       daemonSettings,
       ffmpegStatus,
-      instantPurchaseEnabled,
-      instantPurchaseMax,
       isAuthenticated,
       walletEncrypted,
       setClientSetting,
@@ -200,47 +187,6 @@ class SettingsAdvancedPage extends React.PureComponent<Props, State> {
           </section>
         ) : (
           <div>
-            <Card
-              title={__('Purchase and tip confirmations')}
-              actions={
-                <React.Fragment>
-                  <FormField
-                    type="radio"
-                    name="confirm_all_purchases"
-                    checked={!instantPurchaseEnabled}
-                    label={__('Always confirm before purchasing content or tipping')}
-                    onChange={() => {
-                      this.onInstantPurchaseEnabledChange(false);
-                    }}
-                  />
-                  <FormField
-                    type="radio"
-                    name="instant_purchases"
-                    checked={instantPurchaseEnabled}
-                    label={__('Only confirm purchases or tips over a certain amount')}
-                    onChange={() => {
-                      this.onInstantPurchaseEnabledChange(true);
-                    }}
-                  />
-
-                  {instantPurchaseEnabled && (
-                    <FormFieldPrice
-                      name="confirmation_price"
-                      min={0.1}
-                      onChange={this.onInstantPurchaseMaxChange}
-                      price={instantPurchaseMax}
-                    />
-                  )}
-
-                  <p className="help">
-                    {__(
-                      "When this option is chosen, LBRY won't ask you to confirm purchases or tips below your chosen amount."
-                    )}
-                  </p>
-                </React.Fragment>
-              }
-            />
-
             {(isAuthenticated || !IS_WEB) && (
               <Card
                 title={__('Wallet security')}
