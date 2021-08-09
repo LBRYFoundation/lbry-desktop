@@ -49,7 +49,6 @@ type Props = {
   claimIsMine: boolean,
   sendTip: ({}, (any) => void, (any) => void) => void,
   doToast: ({ message: string }) => void,
-  disabled: boolean,
 };
 
 export function CommentCreate(props: Props) {
@@ -90,7 +89,7 @@ export function CommentCreate(props: Props) {
   const charCount = commentValue.length;
   const [activeTab, setActiveTab] = React.useState('');
   const [tipError, setTipError] = React.useState();
-  const disabled = isSubmitting || !activeChannelClaim || !commentValue.length;
+  const disabled = isSubmitting || isFetchingChannels || !commentValue.length;
   const [shouldDisableReviewButton, setShouldDisableReviewButton] = React.useState();
 
   function handleCommentChange(event) {
@@ -270,7 +269,7 @@ export function CommentCreate(props: Props) {
     return <Empty padded text={__('This channel has disabled comments on their page.')} />;
   }
 
-  if (!hasChannels) {
+  if (!isFetchingChannels && !hasChannels) {
     return (
       <div
         role="button"
@@ -348,7 +347,7 @@ export function CommentCreate(props: Props) {
       })}
     >
       <FormField
-        disabled={!activeChannelClaim}
+        disabled={isFetchingChannels}
         type={SIMPLE_SITE ? 'textarea' : advancedEditor && !isReply ? 'markdown' : 'textarea'}
         name={isReply ? 'content_reply' : 'content_description'}
         label={
@@ -392,6 +391,7 @@ export function CommentCreate(props: Props) {
               icon={activeTab === TAB_LBC ? ICONS.LBC : ICONS.FINANCE}
               label={__('Review')}
               onClick={() => setIsReviewingSupportComment(true)}
+              requiresAuth={IS_WEB}
             />
 
             <Button disabled={disabled} button="link" label={__('Cancel')} onClick={() => setIsSupportComment(false)} />
