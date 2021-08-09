@@ -15,9 +15,9 @@ import { getUriForSearchTerm } from 'util/search';
 
 const DEBOUNCE_REFRESH_MS = 1000;
 
-const BTC_SATOSHIS = 100000000;
 const LBC_MAX = 21000000;
-const LBC_MIN = 1;
+const LBC_MIN = 0;
+const LBC_STEP = 1.0;
 
 type Props = {
   activeChannelClaim: ChannelClaim,
@@ -333,7 +333,7 @@ export default function SettingsCreatorPage(props: Props) {
                   className="form-field--price-amount"
                   max={LBC_MAX}
                   min={LBC_MIN}
-                  step={1 / BTC_SATOSHIS}
+                  step={LBC_STEP}
                   type="number"
                   placeholder="3.14"
                   value={minTipAmountComment}
