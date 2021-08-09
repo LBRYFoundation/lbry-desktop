@@ -223,6 +223,15 @@ $discussion-header__height: 3rem;
   }
 }
 
+.livestream-pinned__wrapper {
+  @extend .livestream-superchats__wrapper;
+  overflow-x: unset;
+  overflow-y: scroll;
+  background-color: var(--color-card-background-highlighted);
+  max-height: 7rem;
+  width: 100%;
+}
+
 .livestream-superchat__amount-large {
   .credit-amount {
     display: flex;
