@@ -7,6 +7,7 @@ import {
   selectIsFetchingComments,
   makeSelectSuperChatsForUri,
   makeSelectSuperChatTotalAmountForUri,
+  selectSettingsByChannelId,
 } from 'redux/selectors/comments';
 import LivestreamComments from './view';
 
@@ -17,6 +18,7 @@ const select = (state, props) => ({
   superChats: makeSelectSuperChatsForUri(props.uri)(state),
   superChatsTotalAmount: makeSelectSuperChatTotalAmountForUri(props.uri)(state),
   myChannels: selectMyChannelClaims(state),
+  settingsByChannelId: selectSettingsByChannelId(state),
 });
 
 export default connect(select, {

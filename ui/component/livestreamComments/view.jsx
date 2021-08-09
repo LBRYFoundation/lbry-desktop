@@ -9,6 +9,7 @@ import UriIndicator from 'component/uriIndicator';
 import CreditAmount from 'component/common/credit-amount';
 import ChannelThumbnail from 'component/channelThumbnail';
 import Tooltip from 'component/common/tooltip';
+import { getChannelIdFromClaim } from 'util/claim';
 
 type Props = {
   uri: string,
@@ -24,6 +25,7 @@ type Props = {
   superChats: Array<Comment>,
   superChatsTotalAmount: number,
   myChannels: ?Array<ChannelClaim>,
+  settingsByChannelId: { [channelId: string]: PerChannelSettings },
 };
 
 const VIEW_MODE_CHAT = 'view_chat';
@@ -45,7 +47,14 @@ export default function LivestreamComments(props: Props) {
     superChats,
     superChatsTotalAmount,
     myChannels,
+    settingsByChannelId,
   } = props;
+
+  const channelId = getChannelIdFromClaim(claim);
+  const channelSettings = channelId ? settingsByChannelId[channelId] : undefined;
+  const minSuper = (channelSettings && channelSettings.min_tip_amount_super_chat) || 0;
+
+  const superChatFiltered = superChats ? superChats.filter((x) => x.support_amount >= minSuper) : [];
 
   const commentsRef = React.createRef();
   const [scrollBottom, setScrollBottom] = React.useState(true);
@@ -53,7 +62,7 @@ export default function LivestreamComments(props: Props) {
   const [performedInitialScroll, setPerformedInitialScroll] = React.useState(false);
   const claimId = claim && claim.claim_id;
   const commentsLength = comments && comments.length;
-  const commentsToDisplay = viewMode === VIEW_MODE_CHAT ? comments : superChats;
+  const commentsToDisplay = viewMode === VIEW_MODE_CHAT ? comments : superChatFiltered;
 
   const discussionElement = document.querySelector('.livestream__comments');
   const commentElement = document.querySelector('.livestream-comment');
@@ -161,10 +170,10 @@ export default function LivestreamComments(props: Props) {
           </div>
         )}
         <div ref={commentsRef} className="livestream__comments-wrapper">
-          {viewMode === VIEW_MODE_CHAT && superChatsTotalAmount > 0 && superChats && (
+          {viewMode === VIEW_MODE_CHAT && superChatsTotalAmount > 0 && superChatFiltered && (
             <div className="livestream-superchats__wrapper">
               <div className="livestream-superchats__inner">
-                {superChats.map((superChat: Comment) => (
+                {superChatFiltered.map((superChat: Comment) => (
                   <Tooltip key={superChat.comment_id} label={superChat.comment}>
                     <div className="livestream-superchat">
                       <div className="livestream-superchat__thumbnail">
@@ -196,7 +205,7 @@ export default function LivestreamComments(props: Props) {
                   authorUri={comment.channel_url}
                   commentId={comment.comment_id}
                   message={comment.comment}
-                  supportAmount={comment.support_amount}
+                  supportAmount={comment.support_amount >= minSuper ? comment.support_amount : 0}
                   isFiat={comment.is_fiat}
                   commentIsMine={comment.channel_id && isMyComment(comment.channel_id)}
                 />
