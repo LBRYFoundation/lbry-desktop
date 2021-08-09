@@ -23,6 +23,7 @@ type Props = {
   isModerator: boolean,
   isGlobalMod: boolean,
   isFiat: boolean,
+  isPinned: boolean,
 };
 
 function LivestreamComment(props: Props) {
@@ -38,6 +39,7 @@ function LivestreamComment(props: Props) {
     isModerator,
     isGlobalMod,
     isFiat,
+    isPinned,
   } = props;
   const [mouseIsHovering, setMouseHover] = React.useState(false);
   const commentByOwnerOfContent = claim && claim.signing_channel && claim.signing_channel.permanent_url === authorUri;
@@ -81,6 +83,13 @@ function LivestreamComment(props: Props) {
             navigate={authorUri}
           >
             {claimName}
+
+            {isPinned && (
+              <span className="comment__pin">
+                <Icon icon={ICONS.PIN} size={14} />
+                {__('Pinned')}
+              </span>
+            )}
           </Button>
 
           <div className="livestream-comment__text">
@@ -104,6 +113,8 @@ function LivestreamComment(props: Props) {
             authorUri={authorUri}
             commentIsMine={commentIsMine}
             disableEdit
+            isTopLevel
+            isPinned={isPinned}
             disableRemove={supportAmount > 0}
           />
         </Menu>

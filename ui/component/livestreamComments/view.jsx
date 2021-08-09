@@ -24,6 +24,7 @@ type Props = {
   superChats: Array<Comment>,
   superChatsTotalAmount: number,
   myChannels: ?Array<ChannelClaim>,
+  pinnedCommentsById: { [claimId: string]: Array<string> },
 };
 
 const VIEW_MODE_CHAT = 'view_chat';
@@ -45,6 +46,7 @@ export default function LivestreamComments(props: Props) {
     superChats,
     superChatsTotalAmount,
     myChannels,
+    pinnedCommentsById,
   } = props;
 
   const commentsRef = React.createRef();
@@ -57,6 +59,12 @@ export default function LivestreamComments(props: Props) {
 
   const discussionElement = document.querySelector('.livestream__comments');
   const commentElement = document.querySelector('.livestream-comment');
+
+  let pinnedComment;
+  const pinnedCommentIds = (claimId && pinnedCommentsById[claimId]) || [];
+  if (pinnedCommentIds.length > 0) {
+    pinnedComment = comments.find((c) => c.comment_id === pinnedCommentIds[0]);
+  }
 
   // todo: implement comment_list --mine in SDK so redux can grab with selectCommentIsMine
   function isMyComment(channelId: string) {
@@ -184,6 +192,22 @@ export default function LivestreamComments(props: Props) {
                   </Tooltip>
                 ))}
               </div>
+            </div>
+          )}
+
+          {pinnedComment && (
+            <div className="livestream-pinned__wrapper">
+              <LivestreamComment
+                key={pinnedComment.comment_id}
+                uri={uri}
+                authorUri={pinnedComment.channel_url}
+                commentId={pinnedComment.comment_id}
+                message={pinnedComment.comment}
+                supportAmount={pinnedComment.support_amount}
+                isFiat={pinnedComment.is_fiat}
+                isPinned={pinnedComment.is_pinned}
+                commentIsMine={pinnedComment.channel_id && isMyComment(pinnedComment.channel_id)}
+              />
             </div>
           )}
 
