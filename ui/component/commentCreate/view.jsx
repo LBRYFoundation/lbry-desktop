@@ -98,6 +98,7 @@ export function CommentCreate(props: Props) {
   const [shouldDisableReviewButton, setShouldDisableReviewButton] = React.useState();
   const channelId = getChannelIdFromClaim(claim);
   const channelSettings = channelId ? settingsByChannelId[channelId] : undefined;
+  const minSuper = (channelSettings && channelSettings.min_tip_amount_super_chat) || 0;
   const minTip = (channelSettings && channelSettings.min_tip_amount_comment) || 0;
   const minTipMet = minTip === 0 || tipAmount >= minTip;
 
@@ -105,7 +106,16 @@ export function CommentCreate(props: Props) {
     minTip !== 0 ? (
       <div className="help--notice">
         <I18nMessage tokens={{ lbc: <CreditAmount noFormat amount={minTip} /> }}>
-          This channel requires a minimum tip of %lbc% to post a comment.
+          This channel requires a minimum tip of %lbc% per comment.
+        </I18nMessage>
+      </div>
+    ) : null;
+
+  const MinSuperNotice =
+    minSuper !== 0 && livestream ? (
+      <div className="help--notice">
+        <I18nMessage tokens={{ lbc: <CreditAmount noFormat amount={minSuper} /> }}>
+          This channel requires a minimum of %lbc% for hyperchats to be listed.
         </I18nMessage>
       </div>
     ) : null;
@@ -366,6 +376,7 @@ export function CommentCreate(props: Props) {
           />
           <Button button="link" label={__('Cancel')} onClick={() => setIsReviewingSupportComment(false)} />
           {MinTipNotice}
+          {MinSuperNotice}
         </div>
       </div>
     );
@@ -487,6 +498,7 @@ export function CommentCreate(props: Props) {
           </>
         )}
         {MinTipNotice}
+        {MinSuperNotice}
       </div>
     </Form>
   );
