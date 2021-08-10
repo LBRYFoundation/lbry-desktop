@@ -59,7 +59,9 @@ type Props = {
   stakedLevel: number,
   supportAmount: number,
   numDirectReplies: number,
-  isFiat: boolean
+  isFiat: boolean,
+  setCommentReply: (any) => void,
+  commentReply: any,
 };
 
 const LENGTH_TO_COLLAPSE = 300;
@@ -93,6 +95,8 @@ function Comment(props: Props) {
     supportAmount,
     numDirectReplies,
     isFiat,
+    setCommentReply,
+    commentReply,
   } = props;
 
   const {
@@ -178,6 +182,7 @@ function Comment(props: Props) {
 
   function handleSubmit() {
     updateComment(commentId, editedMessage);
+    setCommentReply({ ...commentReply, comment_id: commentId, comment: editedMessage });
     setEditing(false);
   }
 
@@ -253,7 +258,10 @@ function Comment(props: Props) {
                 </span>
               )}
             </div>
-            <div className="comment__menu">
+            <span className="comment__menu" onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}>
               <Menu>
                 <MenuButton className="menu__button">
                   <Icon
@@ -271,9 +279,10 @@ function Comment(props: Props) {
                   commentIsMine={commentIsMine}
                   handleEditComment={handleEditComment}
                   supportAmount={supportAmount}
+                  setCommentReply={setCommentReply}
                 />
               </Menu>
-            </div>
+            </span>
           </div>
           <div>
             {isEditing ? (
@@ -286,6 +295,10 @@ function Comment(props: Props) {
                   charCount={charCount}
                   onChange={handleEditMessageChanged}
                   textAreaMaxLength={FF_MAX_CHARS_IN_COMMENT}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
                 />
                 <div className="section__actions section__actions--no-margin">
                   <Button
@@ -294,8 +307,15 @@ function Comment(props: Props) {
                     label={__('Done')}
                     requiresAuth={IS_WEB}
                     disabled={message === editedMessage}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   />
-                  <Button button="link" label={__('Cancel')} onClick={() => setEditing(false)} />
+                  <Button button="link" label={__('Cancel')} onClick={(e) => {
+                    setEditing(false);
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }} />
                 </div>
               </Form>
             ) : (
@@ -330,7 +350,11 @@ function Comment(props: Props) {
                       requiresAuth={IS_WEB}
                       label={commentingEnabled ? __('Reply') : __('Log in to reply')}
                       className="comment__action"
-                      onClick={handleCommentReply}
+                      onClick={(e) => {
+                        handleCommentReply();
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
                       icon={ICONS.REPLY}
                     />
                   )}

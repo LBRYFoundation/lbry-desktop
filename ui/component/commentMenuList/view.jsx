@@ -30,6 +30,7 @@ type Props = {
   moderationDelegatorsById: { [string]: { global: boolean, delegators: { name: string, claimId: string } } },
   openModal: (id: string, {}) => void,
   supportAmount?: any,
+  setCommentReply: (any) => void,
 };
 
 function CommentMenuList(props: Props) {
@@ -56,6 +57,7 @@ function CommentMenuList(props: Props) {
     moderationDelegatorsById,
     openModal,
     supportAmount,
+    setCommentReply,
   } = props;
 
   const contentChannelClaim = !claim
@@ -83,7 +85,7 @@ function CommentMenuList(props: Props) {
     if (playingUri && playingUri.source === 'comment') {
       clearPlayingUri();
     }
-    openModal(MODALS.CONFIRM_REMOVE_COMMENT, { commentId, commentIsMine, contentChannelPermanentUrl, supportAmount });
+    openModal(MODALS.CONFIRM_REMOVE_COMMENT, { commentId, commentIsMine, contentChannelPermanentUrl, supportAmount, setCommentReply });
   }
 
   function handleCommentBlock() {

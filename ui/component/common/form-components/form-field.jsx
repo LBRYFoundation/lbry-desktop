@@ -283,10 +283,12 @@ export class FormField extends React.PureComponent<Props> {
                       type="button"
                       className="button--emoji"
                       label={emoji}
-                      onClick={() => {
+                      onClick={(e) => {
                         inputProps.onChange({
                           target: { value: inputProps.value ? `${inputProps.value} ${emoji}` : emoji },
                         });
+                        e.stopPropagation();
+                        e.preventDefault();
                       }}
                     />
                   ))}

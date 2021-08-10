@@ -11,10 +11,11 @@ type Props = {
   closeModal: () => void,
   deleteComment: (string, ?string) => void,
   supportAmount?: any,
+  setCommentReply: (any) => void,
 };
 
 function ModalRemoveComment(props: Props) {
-  const { commentId, commentIsMine, contentChannelPermanentUrl, closeModal, deleteComment, supportAmount } = props;
+  const { commentId, commentIsMine, contentChannelPermanentUrl, closeModal, deleteComment, supportAmount, setCommentReply } = props;
 
   return (
     <Modal isOpen contentLabel={__('Confirm Comment Deletion')} type="card" onAborted={closeModal}>
@@ -36,6 +37,7 @@ function ModalRemoveComment(props: Props) {
                 label={__('Remove')}
                 onClick={() => {
                   deleteComment(commentId, commentIsMine ? undefined : contentChannelPermanentUrl);
+                  setCommentReply(undefined);
                   closeModal();
                 }}
               />

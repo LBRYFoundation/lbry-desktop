@@ -19,6 +19,7 @@ import LbcMessage from 'component/common/lbc-message';
 import UriIndicator from 'component/uriIndicator';
 import CommentReactions from 'component/commentReactions';
 import CommentCreate from 'component/commentCreate';
+import CommentView from 'component/comment';
 import { NavLink } from 'react-router-dom';
 
 type Props = {
@@ -28,13 +29,27 @@ type Props = {
   doReadNotifications: ([number]) => void,
   doDeleteNotification: (number) => void,
   doResolveUri: (string) => void,
+  myChannels: ?Array<ChannelClaim>,
 };
 
 export default function Notification(props: Props) {
-  const { notification, menuButton = false, doReadNotifications, doDeleteNotification, doResolveUri } = props;
+  const { notification, menuButton = false, doReadNotifications, doDeleteNotification, doResolveUri, myChannels } = props;
   const { push } = useHistory();
   const { notification_rule, notification_parameters, is_read, id } = notification;
   const [isReplying, setReplying] = React.useState(false);
+  const [commentReply, setCommentReply] = React.useState();
+
+  const isMyComment = (channelId: string): boolean => {
+    if (myChannels != null && channelId != null) {
+      for (let i = 0; i < myChannels.length; i++) {
+        if (myChannels[i].claim_id === channelId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   const isCommentNotification =
     notification_rule === RULE.COMMENT ||
     notification_rule === RULE.COMMENT_REPLY ||
@@ -246,12 +261,29 @@ export default function Notification(props: Props) {
                       isReply
                       uri={notificationTarget}
                       parentId={notification_parameters.dynamic.hash}
-                      onDoneReplying={() => {
-                        setReplying(false);
-                      }}
-                      onCancelReplying={() => {
-                        setReplying(false);
-                      }}
+                      onDoneReplying={() => setReplying(false)}
+                      onCancelReplying={() => setReplying(false)}
+                      setCommentReply={setCommentReply}
+                    />
+                  )}
+
+                  {commentReply && (
+                    <CommentView
+                      key={commentReply.comment_id}
+                      uri={notificationTarget}
+                      authorUri={commentReply.channel_url}
+                      author={commentReply.channel_name}
+                      claimId={commentReply.claim_id}
+                      commentId={commentReply.comment_id}
+                      message={commentReply.comment}
+                      timePosted={commentReply.timestamp * 1000}
+                      commentIsMine={commentReply.channel_id && isMyComment(commentReply.channel_id)}
+                      isPinned={commentReply.is_pinned}
+                      supportAmount={commentReply.support_amount}
+                      numDirectReplies={commentReply.replies}
+                      isFiat={commentReply.is_fiat}
+                      setCommentReply={setCommentReply}
+                      commentReply={commentReply}
                     />
                   )}
                 </>

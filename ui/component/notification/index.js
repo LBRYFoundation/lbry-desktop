@@ -1,9 +1,13 @@
 import { connect } from 'react-redux';
 import { doReadNotifications, doDeleteNotification } from 'redux/actions/notifications';
-import { doResolveUri } from 'lbry-redux';
+import { doResolveUri, selectMyChannelClaims } from 'lbry-redux';
 import Notification from './view';
 
-export default connect(null, {
+const select = (state) => ({
+    myChannels: selectMyChannelClaims(state),
+  });
+
+export default connect(select, {
   doReadNotifications,
   doDeleteNotification,
   doResolveUri,

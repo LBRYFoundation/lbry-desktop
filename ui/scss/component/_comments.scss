@@ -218,6 +218,7 @@ $thumbnailWidthSmall: 1rem;
 .comment__message {
   word-break: break-word;
   max-width: 35rem;
+  color: var(--color-text);
 
   ul li,
   ol li {

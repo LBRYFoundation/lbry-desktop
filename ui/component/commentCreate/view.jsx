@@ -50,6 +50,7 @@ type Props = {
   sendTip: ({}, (any) => void, (any) => void) => void,
   doToast: ({ message: string }) => void,
   disabled: boolean,
+  setCommentReply: (any) => void,
 };
 
 export function CommentCreate(props: Props) {
@@ -71,6 +72,7 @@ export function CommentCreate(props: Props) {
     claimIsMine,
     sendTip,
     doToast,
+    setCommentReply,
   } = props;
   const buttonRef: ElementRef<any> = React.useRef();
   const {
@@ -244,6 +246,7 @@ export function CommentCreate(props: Props) {
     createComment(commentValue, claimId, parentId, txid, payment_intent_id, environment)
       .then((res) => {
         setIsSubmitting(false);
+        setCommentReply(res);
 
         if (res && res.signature) {
           setCommentValue('');
