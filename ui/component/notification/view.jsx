@@ -19,6 +19,7 @@ import LbcMessage from 'component/common/lbc-message';
 import UriIndicator from 'component/uriIndicator';
 import CommentReactions from 'component/commentReactions';
 import CommentCreate from 'component/commentCreate';
+import { NavLink } from 'react-router-dom';
 
 type Props = {
   notification: WebNotification,
@@ -144,6 +145,9 @@ export default function Notification(props: Props) {
   } catch (e) {}
 
   notificationLink += `?${urlParams.toString()}`;
+  const navLinkProps = {
+    to: notificationLink,
+  };
 
   function handleNotificationClick() {
     if (!is_read) {
@@ -172,9 +176,11 @@ export default function Notification(props: Props) {
       )
     : notificationLink
     ? (props: { children: any }) => (
-        <a href={notificationLink} className="menu__link--notification" onClick={handleNotificationClick}>
+      <NavLink {...navLinkProps}>
+        <a className="menu__link--notification" onClick={handleNotificationClick}>
           {props.children}
         </a>
+      </NavLink>
       )
     : (props: { children: any }) => (
         <span
