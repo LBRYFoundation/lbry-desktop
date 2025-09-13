@@ -6,7 +6,6 @@ import SUPPORTED_LANGUAGES from 'constants/supported_languages';
 import { parseURI } from 'util/lbryURI';
 import moment from 'moment';
 import { toCapitalCase } from 'util/string';
-import { CUSTOM_HOMEPAGE } from 'config';
 
 export type RowDataItem = {
   title: any,
@@ -167,7 +166,6 @@ export function GetLinksData(
   }
 
   // **************************************************************************
-  // @if CUSTOM_HOMEPAGE='false'
 
   /*
   const YOUTUBER_CHANNEL_IDS = [
@@ -301,7 +299,7 @@ export function GetLinksData(
     },
   };
 
-  if (isHomepage && !CUSTOM_HOMEPAGE) {
+  if (isHomepage && true) {
     if (followedTags) {
       const TRENDING_FOR_TAGS = {
         title: __('Trending For Your Tags'),
@@ -336,7 +334,7 @@ export function GetLinksData(
     }
   }
 
-  if (!CUSTOM_HOMEPAGE) {
+  if (true) {
     rowData.push(TOP_CONTENT_TODAY);
     if (language !== 'en') {
       rowData.push(LANGUAGE_CATEGORY);
