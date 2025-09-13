@@ -2,9 +2,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [master]
   pull_request:
-    branches: [master]
 
 jobs:
   lint:
@@ -17,7 +15,7 @@ jobs:
       - run: yarn lint
 
   build:
-    needs: ['lint']
+    # needs: ['lint']
     name: 'build'
     strategy:
       matrix:
