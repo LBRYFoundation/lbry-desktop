@@ -93,6 +93,7 @@ let baseConfig = {
       'lodash.isempty': 'lodash-es/isEmpty',
       'lodash.forin': 'lodash-es/forIn',
       'lodash.clonedeep': 'lodash-es/cloneDeep',
+	  'react/jsx-runtime': 'react/jsx-runtime.js',
       ...ifProduction({}, { 'react-dom': '@hot-loader/react-dom' }),
     },
     symlinks: false,
