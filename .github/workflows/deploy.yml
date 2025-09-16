@@ -24,7 +24,7 @@ jobs:
         node-version: [16.x]
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-13
           - windows-latest
     runs-on: ${{ matrix.os }}
     continue-on-error: true
