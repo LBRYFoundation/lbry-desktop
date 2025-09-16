@@ -52,6 +52,10 @@ jobs:
       - name: Install Python2
         if: startsWith(runner.os, 'mac')
         run: |
+          brew reinstall zlib
+          export LDFLAGS="-L/usr/local/opt/zlib/lib"
+          export CPPFLAGS="-I/usr/local/opt/zlib/include"
+          export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
           brew install pyenv
           pyenv install 2.7
           pyenv global 2.7
