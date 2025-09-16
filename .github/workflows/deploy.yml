@@ -55,7 +55,7 @@ jobs:
           brew install pyenv
           pyenv install 2.7
           pyenv global 2.7
-          ln -s $(pyenv which python2.7) /usr/bin/python
+          export PATH="$(pyenv which python2.7):$PATH"
       - name: Download blockchain headers
         run: |
           mkdir -p ./static/daemon
