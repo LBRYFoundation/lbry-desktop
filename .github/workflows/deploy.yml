@@ -24,7 +24,7 @@ jobs:
         node-version: [16.x]
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-13
           - windows-latest
     runs-on: ${{ matrix.os }}
     continue-on-error: true
@@ -38,7 +38,7 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         if: startsWith(runner.os, 'mac')
         with:
-          xcode-version: '16.0.0'
+          xcode-version: '15.2.0'
       # This is gonna be hacky.
       # Github made us upgrade xcode, which would force an upgrade of electron-builder to fix mac.
       # But there were bugs with copyfiles / extraFiles that kept seeing duplicates erroring on ln.
@@ -52,14 +52,10 @@ jobs:
       - name: Install Python2
         if: startsWith(runner.os, 'mac')
         run: |
-          brew reinstall zlib
-          export LDFLAGS="-L/usr/local/opt/zlib/lib"
-          export CPPFLAGS="-I/usr/local/opt/zlib/include"
-          export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
           brew install pyenv
           pyenv install 2.7
           pyenv global 2.7
-          export PATH="$(pyenv root)/shims:${PATH}"
+          ln -s $(pyenv which python2.7) /usr/bin/python
       - name: Download blockchain headers
         run: |
           mkdir -p ./static/daemon
