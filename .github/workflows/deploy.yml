@@ -73,8 +73,8 @@ jobs:
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
 
-          WIN_CSC_LINK: ${{ vars.WIN_CSC_LINK }}
-          CSC_LINK: ${{ vars.CSC_LINK }}
+          WIN_CSC_LINK: ${{ vars.WIN_CSC_LINK || '' }}
+          CSC_LINK: ${{ vars.CSC_LINK || '' }}
 
           # UI
           MATOMO_URL: https://analytics.lbry.com/
