@@ -70,10 +70,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN_NEW }}
           NOTARIZATION_USERNAME: ${{ secrets.NOTARIZATION_USERNAME }}
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
-          CSC_LINK: ${{ vars.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          WIN_CSC_LINK: ${{ vars.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          # CSC_LINK: ${{ secrets.CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          # WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          # WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
           # UI
           MATOMO_URL: https://analytics.lbry.com/
           MATOMO_ID: 4
