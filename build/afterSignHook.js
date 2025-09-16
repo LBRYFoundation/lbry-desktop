@@ -14,7 +14,7 @@ module.exports = async function() {
 
   if (!fs.existsSync(appPath)) {
     console.log(`Cannot find application at: ${appPath}`);
-    //TODO throw new Error(`Cannot find application at: ${appPath}`);
+    // TODO throw new Error(`Cannot find application at: ${appPath}`);
   }
 
   console.log(`Notarizing ${appId} found at ${appPath}`);
