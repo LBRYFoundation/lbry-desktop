@@ -49,10 +49,10 @@ jobs:
       - uses: Homebrew/actions/setup-homebrew@master
         if: startsWith(runner.os, 'mac')
       # HACK part 2
-      - uses: actions/setup-python@v6
+      - name: Install Python2
         if: startsWith(runner.os, 'mac')
-        with:
-          python-version: '2.6'
+        run: |
+          brew install python@2
       - name: Download blockchain headers
         run: |
           mkdir -p ./static/daemon
