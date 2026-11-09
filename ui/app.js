@@ -14,7 +14,7 @@ const app = {
 
 global.app = app;
 
-// Lbryinc needs access to the redux store for dispatching auth-releated actions
+// Lbryinc needs access to the redux store for dispatching auth-related actions
 global.store = app.store;
 
 export default app;
